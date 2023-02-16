@@ -11,7 +11,14 @@
       <el-button type="primary">增加</el-button>
     </div>
     <!--表格-->
-    <el-table :data="tableData" style="width: 100%">
+    <el-table 
+    :data="tableData"
+     style="width: 100%"
+     border="200px"
+     ref="multipleTableRef"
+     @selection-change="handleSelectionChange"
+    >
+    <el-table-column type="selection" width="55" />
     <el-table-column fixed prop="date" label="Date" width="150" />
     <el-table-column prop="name" label="Name" width="120" />
     <el-table-column prop="state" label="State" width="120" />
@@ -70,8 +77,12 @@ let tableData = ref([
     tag: 'Office',
   },
 ])
+let multipleSelection = ref([])
 const handleClick = ()=>{
   console.log('click');
+}
+const handleSelectionChange = (val) => {
+  multipleSelection.value = val
 }
 
 
@@ -86,6 +97,16 @@ const handleClick = ()=>{
   position: absolute;
   top:30%;
   left:30%;
-  
+}
+.title{
+  text-align: center;
+}
+.query-box{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.el-input{
+  width: 200px;
 }
 </style>
