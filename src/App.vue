@@ -20,13 +20,13 @@
     >
     <el-table-column type="selection" width="55" />
     <el-table-column prop="name" label="姓名" width="120" />
-    <el-table-column prop="email" label="邮箱" width="120" />
+    <el-table-column prop="email" label="邮箱" width="125" />
     <el-table-column prop="phone" label="电话" width="120" />
     <el-table-column prop="state" label="状态" width="120" />
     <el-table-column prop="address" label="地址" width="300" />
-    <el-table-column fixed="right" label="操作" width="145">
-      <template #default>
-        <el-button link type="primary" size="small" @click="handleClick">删除</el-button>
+    <el-table-column fixed="right" label="操作" width="140">
+      <template #default="scope">
+        <el-button link type="primary" size="small" @click="handleRowDel(scope.row)">删除</el-button>
         <el-button link type="primary" size="small">编辑</el-button>
       </template>
     </el-table-column>
@@ -112,8 +112,12 @@ let tableForm = ref({
 
 })
 let dialogType = ref('add')
-const handleClick = ()=>{
-  console.log('click');
+const handleRowDel = ({id})=>{
+  //通过id，获取要删除信息的索引值
+  let index = tableData.value.findIndex(item=>item.id === id)
+  
+  //通过索引值删除信息
+  tableData.value.splice(index,1)
 }
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
