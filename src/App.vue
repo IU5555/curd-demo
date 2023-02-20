@@ -7,8 +7,8 @@
     </div>
     <!--查询框-->
     <div class="query-box">
-      <el-input v-model="queryInput" placeholder="按姓名搜索" />
-      <el-button type="primary">增加</el-button>
+      <el-input class="query-input" v-model="queryInput" placeholder="按姓名搜索" />
+      <el-button type="primary" @click="handleAdd">增加</el-button>
     </div>
     <!--表格-->
     <el-table 
@@ -19,19 +19,45 @@
      @selection-change="handleSelectionChange"
     >
     <el-table-column type="selection" width="55" />
-    <el-table-column fixed prop="date" label="Date" width="150" />
-    <el-table-column prop="name" label="Name" width="120" />
-    <el-table-column prop="state" label="State" width="120" />
-    <el-table-column prop="city" label="City" width="120" />
-    <el-table-column prop="address" label="Address" width="600" />
-    <el-table-column prop="zip" label="Zip" width="120" />
-    <el-table-column fixed="right" label="Operations" width="120">
+    <el-table-column prop="name" label="姓名" width="120" />
+    <el-table-column prop="email" label="邮箱" width="120" />
+    <el-table-column prop="phone" label="电话" width="120" />
+    <el-table-column prop="state" label="状态" width="120" />
+    <el-table-column prop="address" label="地址" width="300" />
+    <el-table-column fixed="right" label="操作" width="145">
       <template #default>
-        <el-button link type="primary" size="small" @click="handleClick">Detail</el-button>
-        <el-button link type="primary" size="small">Edit</el-button>
+        <el-button link type="primary" size="small" @click="handleClick">删除</el-button>
+        <el-button link type="primary" size="small">编辑</el-button>
       </template>
     </el-table-column>
   </el-table>
+  <!--dialog弹窗-->
+  <el-dialog v-model="dialogFormVisible" :title="dialogType === 'add' ?'新增':'编辑'">
+    <el-form :model="tableForm">
+      <el-form-item label="请输入姓名" :label-width="100">
+        <el-input v-model="tableForm.name" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="请输入邮箱" :label-width="100">
+        <el-input v-model="tableForm.email" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="请输入手机" :label-width="100">
+        <el-input v-model="tableForm.phone" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="请输入状态" :label-width="100">
+        <el-input v-model="tableForm.state" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="请输入地址" :label-width="100">
+        <el-input v-model="tableForm.address" autocomplete="off" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button type="primary" @click="dialogConfirm">
+          确认
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
   </div>
 </template>
 <script setup>
@@ -41,48 +67,72 @@ import { ref } from 'vue';
 let queryInput = ref('')
 let tableData = ref([
    {
-    date: '2016-05-03',
+    id:'1',
     name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
+    email:'2131@qq.com',
+    state: '在职',
     address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Home',
+    phone:'12343534',
   },
   {
-    date: '2016-05-02',
+    id:'2',
     name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
+    email:'2131@qq.com',
+    state: '在职',
     address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Office',
+    phone:'12343534',
   },
   {
-    date: '2016-05-04',
+    id:'3',
     name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
+    email:'2131@qq.com',
+    state: '在职',
     address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Home',
+    phone:'12343534',
   },
   {
-    date: '2016-05-01',
+    id:'4',
     name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
+    email:'2131@qq.com',
+    state: '在职',
     address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Office',
-  },
+    phone:'12343534',
+  }
 ])
 let multipleSelection = ref([])
+let dialogFormVisible = ref(false)
+let tableForm = ref({
+  name:'许志涛',
+  email:'2314@qq.com',
+  state:'在职',
+  address:'湖南省',
+  phone:'123435342',
+
+ 
+
+})
+let dialogType = ref('add')
 const handleClick = ()=>{
   console.log('click');
 }
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
+}
+const handleAdd = ()=>{
+  dialogFormVisible.value = true 
+  tableForm.value = {}
+}
+const dialogConfirm = ()=>{
+  dialogFormVisible.value = false
+ //拿到数据
+
+
+ //添加到table
+ tableData.value.push({
+  id: (tableData.value.length+1).toString(),
+  ...tableForm.value
+ })
+
 }
 
 
@@ -94,9 +144,7 @@ const handleSelectionChange = (val) => {
 <style >
 .table-box{
   width: 800px;
-  position: absolute;
-  top:30%;
-  left:30%;
+  margin: 200px auto;
 }
 .title{
   text-align: center;
@@ -106,7 +154,8 @@ const handleSelectionChange = (val) => {
   justify-content: space-between;
   margin-bottom: 20px;
 }
-.el-input{
+
+.query-input{
   width: 200px;
 }
 </style>
