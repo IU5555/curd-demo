@@ -8,7 +8,10 @@
     <!--查询框-->
     <div class="query-box">
       <el-input class="query-input" v-model="queryInput" placeholder="按姓名搜索" />
-      <el-button type="primary" @click="handleAdd">增加</el-button>
+      <div class="btnList">
+        <el-button type="primary" @click="handleAdd">增加</el-button>
+      <el-button type="danger" @click="handleDelList" v-if="multipleSelection.length>0" >删除多条</el-button>
+      </div>
     </div>
     <!--表格-->
     <el-table 
@@ -112,6 +115,7 @@ let tableForm = ref({
 
 })
 let dialogType = ref('add')
+//删除一条信息
 const handleRowDel = ({id})=>{
   //通过id，获取要删除信息的索引值
   let index = tableData.value.findIndex(item=>item.id === id)
@@ -119,12 +123,24 @@ const handleRowDel = ({id})=>{
   //通过索引值删除信息
   tableData.value.splice(index,1)
 }
+//选中
 const handleSelectionChange = (val) => {
-  multipleSelection.value = val
+  multipleSelection.value = []
+
+  val.forEach(item => {
+    multipleSelection.value.push(item.id)
+  });
+  
 }
+//弹窗
 const handleAdd = ()=>{
   dialogFormVisible.value = true 
   tableForm.value = {}
+}
+const handleDelList = ()=>{
+  multipleSelection.value.forEach((id)=>{
+    handleRowDel(id)
+  })
 }
 const dialogConfirm = ()=>{
   dialogFormVisible.value = false
