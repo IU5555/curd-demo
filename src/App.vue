@@ -30,7 +30,7 @@
     <el-table-column fixed="right" label="操作" width="140">
       <template #default="scope">
         <el-button link type="primary" size="small" @click="handleRowDel(scope.row)">删除</el-button>
-        <el-button link type="primary" size="small">编辑</el-button>
+        <el-button link type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -66,7 +66,7 @@
 <script setup>
 import { ref } from 'vue';
 
-
+/*响应式变量*/
 let queryInput = ref('')
 let tableData = ref([
    {
@@ -105,6 +105,7 @@ let tableData = ref([
 let multipleSelection = ref([])
 let dialogFormVisible = ref(false)
 let tableForm = ref({
+  id:(tableData.value.length+1).toString(),
   name:'许志涛',
   email:'2314@qq.com',
   state:'在职',
@@ -114,7 +115,10 @@ let tableForm = ref({
  
 
 })
-let dialogType = ref('add')
+let dialogType = ref('')
+
+
+/*方法*/
 //删除一条信息
 const handleRowDel = ({id})=>{
   //通过id，获取要删除信息的索引值
@@ -136,22 +140,42 @@ const handleSelectionChange = (val) => {
 const handleAdd = ()=>{
   dialogFormVisible.value = true 
   tableForm.value = {}
+  dialogType.value ='add'
 }
+
+//删除多行信息
 const handleDelList = ()=>{
   multipleSelection.value.forEach((id)=>{
     handleRowDel(id)
   })
 }
+
+
 const dialogConfirm = ()=>{
   dialogFormVisible.value = false
  //拿到数据
-
-
- //添加到table
- tableData.value.push({
-  id: (tableData.value.length+1).toString(),
-  ...tableForm.value
+  if(dialogType.value==='add'){
+    //添加到table
+    tableData.value.push({
+      id: (tableData.value.length+1).toString(),
+      ...tableForm.value
  })
+  }
+  else{
+    //获取索引
+    let index = tableData.value.findIndex(item=>item.id ===tableForm.value.id)
+    console.log(index);
+    //替换相应数据
+    tableData.value[index] = tableForm.value 
+  }
+ 
+}
+
+//编辑数据
+const handleEdit=(row)=>{
+  dialogFormVisible.value = true
+  dialogType.value ='edit'
+  tableForm.value = {...row}
 
 }
 
